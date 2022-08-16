@@ -42,3 +42,33 @@ spec:
     kind: Folder
     name: audit-and-security.audit
 ---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: billing-iam-member
+  namespace: common
+  labels:
+    resource-group: common
+spec:
+  member: serviceAccount:billing-service-account@${PROJECT_ID?}.iam.gserviceaccount.com # kpt-set: serviceAccount:billing-service-account@${audit-prj-id}.iam.gserviceaccount.com
+  role: roles/logging.viewAccessor
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    kind: Project
+    name: Audit # kpt-set: ${audit-prj-id}
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: log-writer
+  namespace: config-control
+  labels:
+    resource-group: common
+spec:
+  member: group:log-writer # kpt-set: group:${log-writer}
+  role: roles/storage.objectCreator
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    kind: Folder
+    name: audit-and-security.audit
+---
